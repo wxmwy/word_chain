@@ -32,5 +32,5 @@
 *.app
 
 .vs/
-Debug/
-/wllw666/Calculator/Calculator/subject.txt
+[Dd]ebug/
+[Rr]elease/
