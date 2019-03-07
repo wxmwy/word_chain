@@ -8,7 +8,14 @@
 using namespace std;
 
 char words[MAX_WORD_NUM][MAX_WORD_LONG];
+char result[MAX_WORD_NUM][MAX_WORD_LONG];
 int wordnum = 0;
+char head = '\0', tail = '\0';
+bool enable_loop = false, maxword = false, maxchar = false;
+
+
+int gen_chain_word(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
+int gen_chain_char(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
 
 void getwords(char *buff, int size){
 	int i, length, ifword;
@@ -29,7 +36,6 @@ int main(int argc, char *argv[]){
     string s;
     int cnt, size, i;
     
-    //璇诲啓鏂囦欢
     ofstream outf;
     ifstream inf;
     
@@ -40,9 +46,80 @@ int main(int argc, char *argv[]){
 	}
 
 	cnt = 1;
-    while(argv[cnt][0] == '-' && cnt <= argc){
+    /*while(argv[cnt][0] == '-' && cnt <= argc){
     	cnt++;
     	cout << cnt << '\n' <<endl;
+	}*/
+	while(cnt < argc){
+		if(argv[cnt][0] == '-' && argv[cnt][1] == 'w' && argv[cnt][2] == '\0'){ //-w
+			if(maxword){
+				cout << "Repeated parameter -w." <<endl;
+				exit(1); 
+			}
+			else if(maxchar){
+				cout << "Conflicting parameters -w -c." <<endl;
+				exit(1); 
+			}
+			maxword = true;
+		}
+		else if(argv[cnt][0] == '-' && argv[cnt][1] == 'c' && argv[cnt][2] == '\0'){ //-c
+			if(maxchar){
+				cout << "Repeated parameter -c." <<endl;
+				exit(1); 
+			}
+			else if(maxword){
+				cout << "Conflicting parameters -w -c." <<endl;
+				exit(1); 
+			}
+			maxchar = true;
+		}
+		else if(argv[cnt][0] == '-' && argv[cnt][1] == 'r' && argv[cnt][2] == '\0'){ //-r
+			if(enable_loop){
+				cout << "Repeated parameter -t." <<endl;
+				exit(1); 
+			}
+			enable_loop = true;
+		}
+
+		else if(argv[cnt][0] == '-' && argv[cnt][1] == 'h' && argv[cnt][2] == '\0'){ //-h
+			if(head != '\0'){
+				cout << "Repeated parameter -h." <<endl;
+				exit(1); 
+			}
+			cnt++;
+			if(cnt==argc){
+				cout << "missing parameter." <<endl;
+				exit(1); 
+			}
+			head = argv[cnt][0];
+			if(argv[cnt][1] != '\0' || !(head >= 'a' && head <= 'z') || (head >= 'A' && head <= 'Z')){
+				cout << "Illegal parameter." <<endl;
+				exit(1); 
+			}
+			if(head >= 'A' && head <= 'Z') head = head - 'A' + 'a';
+		}
+		else if(argv[cnt][0] == '-' && argv[cnt][1] == 't' && argv[cnt][2] == '\0'){ //-t
+			if(tail != '\0'){
+				cout << "Repeated parameter -t." <<endl;
+				exit(1); 
+			}
+			cnt++;
+			if(cnt==argc){
+				cout << "missing parameter." <<endl;
+				exit(1); 
+			}
+			tail = argv[cnt][0];
+			if(argv[cnt][1] != '\0' || !(tail >= 'a' && tail <= 'z') || (tail >= 'A' && tail <= 'Z')){
+				cout << "Illegal parameter." <<endl;
+				exit(1); 
+			}
+			if(tail >= 'A' && tail <= 'Z') tail = tail - 'A' + 'a';
+		}
+		else{
+			cout << "Illegal parameter." <<endl;
+			exit(1); 
+		}
+		cnt++;
 	}
 	
 	if(DEBUG) printf("input file path=%s\n", argv[cnt]);
