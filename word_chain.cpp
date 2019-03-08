@@ -1,4 +1,4 @@
-﻿#include<fstream>
+#include<fstream>
 #include<iostream>
 #include<string>
 #define DEBUG 1
@@ -36,16 +36,15 @@ void getwords(char *buff, int size) {
 int main(int argc, char *argv[]) {
     string s;
     int cnt, size, i;
-    
+
     ofstream outf;
     ifstream inf;
 
 	cnt = 1;
-    /*while(argv[cnt][0] == '-' && cnt <= argc){
-    	cnt++;
-    	cout << cnt << '\n' <<endl;
-	}*/
-	while(cnt < argc){
+	while(cnt < argc-1){
+		if(DEBUG){
+			cout << argv[cnt] << argv[cnt][0] << argv[cnt][1] << argv[cnt][2] << endl;
+		}
 		if(argv[cnt][0] == '-' && argv[cnt][1] == 'w' && argv[cnt][2] == '\0'){ //-w
 			if(maxword){
 				cout << "Repeated parameter -w." <<endl;
@@ -87,8 +86,8 @@ int main(int argc, char *argv[]) {
 				exit(1); 
 			}
 			head = argv[cnt][0];
-			if(argv[cnt][1] != '\0' || !(head >= 'a' && head <= 'z') || (head >= 'A' && head <= 'Z')){
-				cout << "Illegal parameter." <<endl;
+			if(argv[cnt][1] != '\0' || !((head >= 'a' && head <= 'z') || (head >= 'A' && head <= 'Z'))){
+				cout << "Illegal parameter " << argv[cnt] <<endl;
 				exit(1); 
 			}
 			if(head >= 'A' && head <= 'Z') head = head - 'A' + 'a';
@@ -104,8 +103,8 @@ int main(int argc, char *argv[]) {
 				exit(1); 
 			}
 			tail = argv[cnt][0];
-			if(argv[cnt][1] != '\0' || !(tail >= 'a' && tail <= 'z') || (tail >= 'A' && tail <= 'Z')){
-				cout << "Illegal parameter." <<endl;
+			if(argv[cnt][1] != '\0' || !((tail >= 'a' && tail <= 'z') || (tail >= 'A' && tail <= 'Z'))){
+				cout << "Illegal parameter " << argv[cnt] <<endl;
 				exit(1); 
 			}
 			if(tail >= 'A' && tail <= 'Z') tail = tail - 'A' + 'a';
@@ -116,19 +115,6 @@ int main(int argc, char *argv[]) {
 		}
 		cnt++;
 	}
-	
-	if(DEBUG) printf("input file path=%s\n", argv[cnt]);
-    if (DEBUG) printf("argc=%d\n", argc);
-    if (argc < 2) {
-        cout << "The number of parameters is incorrect." << endl;
-        exit(1);
-    }
-
-    cnt = 1;
-    while (argv[cnt][0] == '-' && cnt <= argc) {
-        cnt++;
-        cout << cnt << '\n' << endl;
-    }
 
     if (DEBUG) printf("input file path=%s\n", argv[cnt]);
     inf.open(argv[cnt]);
@@ -141,7 +127,7 @@ int main(int argc, char *argv[]) {
     cnt = 0;
     while (getline(inf, s)) {
         outf << s << '\n';
-        cout << s << endl;
+        //cout << s << endl;
         size = s.length();
         char buff[BUF_SIZE + 2];
         for (i = 0; i < size; i++) buff[i] = s[i];
@@ -152,10 +138,9 @@ int main(int argc, char *argv[]) {
     inf.close();
     outf.close();
 
-    for (int i = 0; i < wordnum; i++) {
+    /*for (int i = 0; i < wordnum; i++) {
         cout << words[i] << endl;
-    }
-
-
+    }*/
+    cout << "head=" << head << "  tail=" << tail << "  enable_loop=" << enable_loop << "  maxword=" << maxword << "  maxchar=" << maxchar << endl;
     return 0;
 }
