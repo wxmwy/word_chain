@@ -36,16 +36,10 @@ void getwords(char *buff, int size) {
 int main(int argc, char *argv[]) {
     string s;
     int cnt, size, i;
-<<<<<<< HEAD
     
-=======
-
-    //璇诲啓鏂囦欢
->>>>>>> ccfee06f77ef52fdcf696868868ab11ef687d70b
     ofstream outf;
     ifstream inf;
 
-<<<<<<< HEAD
 	cnt = 1;
     /*while(argv[cnt][0] == '-' && cnt <= argc){
     	cnt++;
@@ -124,7 +118,6 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if(DEBUG) printf("input file path=%s\n", argv[cnt]);
-=======
     if (DEBUG) printf("argc=%d\n", argc);
     if (argc < 2) {
         cout << "The number of parameters is incorrect." << endl;
@@ -138,7 +131,6 @@ int main(int argc, char *argv[]) {
     }
 
     if (DEBUG) printf("input file path=%s\n", argv[cnt]);
->>>>>>> ccfee06f77ef52fdcf696868868ab11ef687d70b
     inf.open(argv[cnt]);
     if (!inf) {
         cout << "File does not exist." << endl;
