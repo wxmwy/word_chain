@@ -1,7 +1,8 @@
-#include <cstdio>
+ï»¿#include <cstdio>
 #include <cstring>
 #include <cctype>
 #include <queue>
+#include "Core.h"
 using namespace std;
 
 int graph[30][30], words_index[30][30];
@@ -18,12 +19,12 @@ int init_unweighted_graph(char* words[], int len)
         start = tolower(word[0]) - 'a';
         end = tolower(word[strlen(word) - 1]) - 'a';
         if (start == end && graph[start][end]) {
-            return -1; //´ø¶à¸ö×Ô»·£¬±¨´í
+            return -1; //å¸¦å¤šä¸ªè‡ªç¯ï¼ŒæŠ¥é”™
         }
         if (!graph[start][end]) {
             graph[start][end] = 1;
             words_index[start][end] = i;
-            if (start != end) { //¶ÔÓÚ×Ô»·£¬Èë¶È²»Ôö¼Ó
+            if (start != end) { //å¯¹äºè‡ªç¯ï¼Œå…¥åº¦ä¸å¢åŠ 
                 in_degree[end]++;
             }
         }
@@ -43,12 +44,12 @@ int init_weighted_graph(char* words[], int len)
         start = tolower(word[0]) - 'a';
         end = tolower(word[len_word - 1]) - 'a';
         if (start == end && graph[start][end]) {
-            return -1; //´ø¶à¸ö×Ô»·£¬±¨´í
+            return -1; //å¸¦å¤šä¸ªè‡ªç¯ï¼ŒæŠ¥é”™
         }
         if (!graph[start][end]) {
             graph[start][end] = len_word;
             words_index[start][end] = i;
-            if (start != end) { //¶ÔÓÚ×Ô»·£¬Èë¶È²»Ôö¼Ó
+            if (start != end) { //å¯¹äºè‡ªç¯ï¼Œå…¥åº¦ä¸å¢åŠ 
                 in_degree[end]++;
             }
         }
@@ -68,7 +69,7 @@ int topo_sort()
     for (int i = 0; i < 26; i++) {
         for (j = 0; j < 26 && in_degree[j] != 0; j++);
         if (j == 26) {
-            return -1; //ÓĞ»·
+            return -1; //æœ‰ç¯
         }
         in_degree[j] = -1;
         vertex.push(j);
@@ -118,7 +119,7 @@ void dp(char head, char tail)
 
 int get_last_vertex(char tail)
 {
-    int max_length = 0, last_v;
+    int max_length = -1, last_v;
 
     if (tail) {
         return tolower(tail) - 'a';
