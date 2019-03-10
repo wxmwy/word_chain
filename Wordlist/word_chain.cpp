@@ -1,7 +1,10 @@
-#include<fstream>
-#include<iostream>
-#include<string>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdio>
 #include "Core.h"
+
 #define DEBUG 1
 #define MAX_WORD_NUM 20000
 #define MAX_WORD_LONG 30
@@ -14,6 +17,8 @@ char *result[MAX_WORD_NUM];
 int wordnum = 0;
 char head = '\0', tail = '\0';
 bool enable_loop = false, maxword = false, maxchar = false;
+clock_t start, finish;
+
 
 void getwords(char *buff, int size) {
     int i, length, ifword;
@@ -35,9 +40,10 @@ void getwords(char *buff, int size) {
 
 
 int main(int argc, char *argv[]) {
+    start = clock();
+
     string s;
     int cnt, size, i;
-
     ofstream outf;
     ifstream inf;
 
@@ -129,7 +135,7 @@ int main(int argc, char *argv[]) {
     while (getline(inf, s)) {
         //outf << s << '\n';
         //cout << s << endl;
-        size = s.length();
+        size = (int)s.length();
         char buff[BUF_SIZE + 2];
         for (i = 0; i < size; i++) buff[i] = s[i];
         buff[i] = '\0';
@@ -147,10 +153,10 @@ int main(int argc, char *argv[]) {
     cout << "head=" << head << "  tail=" << tail << "  enable_loop=" << enable_loop << "  maxword=" << maxword << "  maxchar=" << maxchar << endl;
     int len = 0;
     if (maxword) {
-        len = gen_chain_word(pwords, wordnum, result, head, tail, false);
+        len = gen_chain_word(pwords, wordnum, result, head, tail, enable_loop);
     }
     else if (maxchar) {
-        len = gen_chain_char(pwords, wordnum, result, head, tail, false);
+        len = gen_chain_char(pwords, wordnum, result, head, tail, enable_loop);
     }
     else {
         cout << "missing parameter -w or -c." << endl;
@@ -164,5 +170,7 @@ int main(int argc, char *argv[]) {
         outf << result[i] << '\n';
     }
     outf.close();
+    finish = clock();
+    printf("%f seconds cost.\n", (double)(finish - start) / CLOCKS_PER_SEC);
     return 0;
 }
