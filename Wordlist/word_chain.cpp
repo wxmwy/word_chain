@@ -3,7 +3,7 @@
 #include<string>
 #include "Core.h"
 #define DEBUG 1
-#define MAX_WORD_NUM 2000
+#define MAX_WORD_NUM 20000
 #define MAX_WORD_LONG 30
 #define BUF_SIZE 1000
 using namespace std;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     while (getline(inf, s)) {
         //outf << s << '\n';
         //cout << s << endl;
-        size = s.length();
+        size = (int)s.length();
         char buff[BUF_SIZE + 2];
         for (i = 0; i < size; i++) buff[i] = s[i];
         buff[i] = '\0';
@@ -138,10 +138,11 @@ int main(int argc, char *argv[]) {
     }
     inf.close();
 
-
+    /*
     for (int i = 0; i < wordnum; i++) {
         cout << words[i] << endl;
     }
+    */
 
     cout << "head=" << head << "  tail=" << tail << "  enable_loop=" << enable_loop << "  maxword=" << maxword << "  maxchar=" << maxchar << endl;
     int len = 0;

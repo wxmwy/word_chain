@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cctype>
 #include <queue>
+#include <iostream>
 #include "Core.h"
 using namespace std;
 
@@ -18,6 +19,10 @@ int init_unweighted_graph(char* words[], int len)
         word = words[i];
         start = tolower(word[0]) - 'a';
         end = tolower(word[strlen(word) - 1]) - 'a';
+        if (start < 0 || start>29 || end < 0 || end >29) {
+            cout << "The word contains illegal characters." << endl;
+            exit(1);
+        }
         if (start == end && graph[start][end]) {
             return -1; //带多个自环，报错
         }
@@ -40,9 +45,14 @@ int init_weighted_graph(char* words[], int len)
 
     for (int i = 0; i < len; i++) {
         word = words[i];
-        len_word = strlen(word);
+        len_word = (int)strlen(word);
         start = tolower(word[0]) - 'a';
         end = tolower(word[len_word - 1]) - 'a';
+        if (start < 0 || start>29 || end < 0 || end >29) {
+            cout << "The word contains illegal characters." << endl;
+            exit(1);
+        }
+
         if (start == end && graph[start][end]) {
             return -1; //带多个自环，报错
         }
