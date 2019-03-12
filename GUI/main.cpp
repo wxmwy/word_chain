@@ -6,12 +6,11 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
-#include <windows.h>
+#include <Windows.h>
 #include <commdlg.h>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "Core.h"
 using namespace std;
 
 // About OpenGL function loaders: modern OpenGL doesn't have a standard header file and requires individual function pointers to be loaded manually.
@@ -36,6 +35,9 @@ using namespace std;
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
+
+typedef int(*p_gen_chain_word)(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
+typedef int(*p_gen_chain_char)(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -80,8 +82,21 @@ int get_save_file_name(char *file_name)
 }
 
 
-int main(int, char**)
+int main(void)
 {
+    HINSTANCE CoreDLL = LoadLibrary("Core.dll");
+    if (CoreDLL == NULL) {
+        cout << "File 'Core.dll' not found." << endl;
+        exit(1);
+    }
+
+    p_gen_chain_word gen_chain_word = (p_gen_chain_word)GetProcAddress(CoreDLL, "gen_chain_word");
+    p_gen_chain_char gen_chain_char = (p_gen_chain_char)GetProcAddress(CoreDLL, "gen_chain_char");
+    if (gen_chain_word == NULL || gen_chain_char == NULL) {
+        cout << "Invalid file 'Core.dll'." << endl;
+        exit(1);
+    }
+    
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -350,5 +365,6 @@ int main(int, char**)
     glfwDestroyWindow(window);
     glfwTerminate();
 
+    FreeLibrary(CoreDLL);
     return 0;
 }

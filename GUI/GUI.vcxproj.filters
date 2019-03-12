@@ -24,9 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include=".\examples\imgui_impl_opengl3.h">
       <Filter>examples</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Core.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include=".\examples\imgui_impl_opengl3.cpp">
