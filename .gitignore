@@ -10,4 +10,4 @@ GUIBIN/*
 !GUIBIN/Core.dll
 !GUIBIN/GUI.exe
 !GUIBIN/imgui.ini
-/报告20190313-2121.diagsession
+!GUIBIN/Readme.md
