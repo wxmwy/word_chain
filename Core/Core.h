@@ -17,7 +17,9 @@ typedef struct {
 } WordInfo;
 
 
-class CREATDLL_API Core {
+
+
+class Core {
 private:
 
     int graph[30][30], words_index[30][30];
