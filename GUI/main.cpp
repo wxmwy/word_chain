@@ -96,7 +96,7 @@ int main(void)
         cout << "Invalid file 'Core.dll'." << endl;
         exit(1);
     }
-    
+
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -230,9 +230,8 @@ int main(void)
             ImGui::Begin("Word_chain");                          // Create a window called "Hello, world!" and append into it.
 
             ImGui::Text("Please input words or select file:");
-            //ImGui::Checkbox("Select file", &show_demo_window);
-            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TODO file select
-            if (ImGui::Button("Open File")) {
+            if (ImGui::Button("Select File")) {
+                show_result = false;
                 if (get_open_file_name(open_file_name)) {
                     inf.open(open_file_name);
                     if (inf) {
@@ -251,10 +250,17 @@ int main(void)
             }
             ImGui::SameLine();
             ImGui::Text("%s", open_file_name);
-            ImGui::InputTextMultiline(label, buf, 10000, ImVec2(200, 200), 0, NULL, NULL);
+            if (ImGui::InputTextMultiline(label, buf, 10000, ImVec2(200, 200), 0, NULL, NULL)) {
+                show_result = false;
+            }
+
             ImGui::Text("Please select parameters:");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("-w", &par_w);
-            ImGui::Checkbox("-c", &par_c);
+            if (ImGui::Checkbox("-w", &par_w)) {
+                show_result = false;
+            }
+            if (ImGui::Checkbox("-c", &par_c)) {
+                show_result = false;
+            }
             if (!par_w && !par_c) {
                 ImGui::Text("The execution mode has not been selected.");
                 par_right = false;
@@ -264,27 +270,42 @@ int main(void)
                 par_right = false;
             }
 
-            ImGui::Checkbox("-r", &par_r);
-            ImGui::Checkbox("-h", &par_h);
-            ImGui::SameLine();
-            ImGui::InputText(label_head, head, 2, 0, NULL, NULL);
-            if (par_h && (head[1] != '\0' || !(head[0] >= 'a' && head[0] <= 'z' || head[0] >= 'A' && head[0] <= 'Z'))) {
-                ImGui::Text("wrong head %s", head);
-                par_right = false;
+            if (ImGui::Checkbox("-r", &par_r)) {
+                show_result = false;
             }
-            ImGui::Checkbox("-t", &par_t);
+
+            if (ImGui::Checkbox("-h", &par_h)) {
+                show_result = false;
+            }
             ImGui::SameLine();
-            ImGui::InputText(label_tail, tail, 2, 0, NULL, NULL);
-            if (par_t && (tail[1] != '\0' || !(tail[0] >= 'a' && tail[0] <= 'z' || tail[0] >= 'A' && tail[0] <= 'Z'))) {
-                ImGui::Text("wrong tail %s", tail);
+            if (ImGui::InputText(label_head, head, 2, 0, NULL, NULL)) {
+                show_result = false;
+            }
+            if (par_h && (head[1] != '\0' || !(head[0] >= 'a' && head[0] <= 'z' || head[0] >= 'A' && head[0] <= 'Z'))) {
+                ImGui::SameLine();
+                ImGui::Text("wrong head %s.", head);
                 par_right = false;
             }
 
-            
+            if (ImGui::Checkbox("-t", &par_t)) {
+                show_result = false;
+            }
+            ImGui::SameLine();
+            if (ImGui::InputText(label_tail, tail, 2, 0, NULL, NULL)) {
+                show_result = false;
+            }
+            if (par_t && (tail[1] != '\0' || !(tail[0] >= 'a' && tail[0] <= 'z' || tail[0] >= 'A' && tail[0] <= 'Z'))) {
+                ImGui::Text("wrong tail %s.", tail);
+                par_right = false;
+            }
+
+
             if (par_right && ImGui::Button("Run")) {
-                int i, length, ifword;
+                int length, ifword;
                 int wordnum = 0;
-                for (i = 0; i < 10000; i++) {
+                char h, t;
+                answer.clear();
+                for (int i = 0; i < 10000; i++) {
                     length = 0;
                     ifword = 0;
                     while ((buf[i] >= 'a' && buf[i] <= 'z') || (buf[i] >= 'A' && buf[i] <= 'Z') && i < 10000) {
@@ -298,29 +319,31 @@ int main(void)
                         wordnum++;
                     }
                 }
-                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TODO Core
+                
+                h = par_h ? head[0] : 0;
+                t = par_t ? tail[0] : 0;
                 int cnt = 0;
                 if (par_w) {
-                    cnt = gen_chain_word(pwords, wordnum, result, head[0], tail[0], par_r);
-                    cout << "par_w" << endl;
-                    cout << cnt << endl;
+                    cnt = gen_chain_word(pwords, wordnum, result, h, t, par_r);
+                    // cout << "par_w" << endl;
+                    // cout << cnt << endl;
 
                 }
                 else if (par_c) {
                     cnt = gen_chain_char(pwords, wordnum, result, head[0], tail[0], par_r);
-                    cout << "par_c" << endl;
-                    cout << cnt << endl;
+                    // cout << "par_c" << endl;
+                    // cout << cnt << endl;
                 }
-                
+
                 for (int i = 0; i < cnt; i++) {
                     answer += result[i];
                     answer += "\n";
                 }
-                cout << answer << endl;
+                // cout << answer << endl;
                 show_result = true;
             }
-            if (show_result) {
-                ImGui::Text("Answer is:\n%s", answer.c_str());
+            if (par_right && show_result) {
+                ImGui::Text("Result:\n%s", answer.c_str());
                 if (ImGui::Button("Export")) {
                     if (get_save_file_name(save_file_name)) {
                         outf.open(save_file_name);
@@ -333,7 +356,7 @@ int main(void)
             }
             ImGui::End();
         }
-        
+
         // 3. Show another simple window.
         if (show_another_window) {
             ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
