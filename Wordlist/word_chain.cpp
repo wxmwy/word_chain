@@ -21,6 +21,8 @@ int wordnum = 0;
 char head = '\0', tail = '\0';
 bool enable_loop = false, maxword = false, maxchar = false;
 
+clock_t start, finish;
+
 class File_handle {
 private:
     static void getwords(char *buff, int size) {
@@ -37,6 +39,7 @@ private:
             if (ifword) {
                 pwords[wordnum] = words[wordnum];
                 wordnum++;
+
             }
         }
     }
@@ -155,6 +158,7 @@ public:
 
 int main(int argc, char *argv[]) 
 {
+    start = clock();
     HINSTANCE CoreDLL = LoadLibrary("Core.dll");
     if (CoreDLL == NULL) {
         cout << "File 'Core.dll' not found." << endl;
@@ -171,7 +175,7 @@ int main(int argc, char *argv[])
     int cnt;
     cnt = par_handle::deal_par(argc, argv);
     File_handle::deal_file(cnt, argv);
-
+    puts("weewew");
     int len = 0;
     if (maxword) {
         len = gen_chain_word(pwords, wordnum, result, head, tail, enable_loop);
@@ -193,5 +197,7 @@ int main(int argc, char *argv[])
     }
     outf.close();
     FreeLibrary(CoreDLL);
+    finish = clock();
+    printf("%f seconds cost.\n", (double)(finish - start) / CLOCKS_PER_SEC);
     return 0;
 }
