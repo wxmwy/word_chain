@@ -336,7 +336,7 @@ int main(void)
                         wordnum++;
                         if (wordnum > MAX_WORD_NUM - 2) {
                             answer = string("Error: the word list is too long.");
-                            goto label2;
+                            goto label1;
                         }
                     }
                 }

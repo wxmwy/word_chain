@@ -184,8 +184,8 @@ int main(int argc, char *argv[])
             }
             outf.close();
         }
-        catch (const char *erroe_message) {
-            cout << erroe_message << endl;
+        catch (const char *error_message) {
+            cout << error_message << endl;
         }
     }
     else if (maxchar) {
@@ -200,8 +200,8 @@ int main(int argc, char *argv[])
             }
             outf.close();
         }
-        catch (const char *erroe_message) {
-            cout << erroe_message << endl;
+        catch (const char *error_message) {
+            cout << error_message << endl;
         }
     }
     else {
