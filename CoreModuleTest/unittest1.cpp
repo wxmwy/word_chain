@@ -234,5 +234,98 @@ namespace CoreModuleTest
             int len = gen_chain_word(input, 11, result, 0, 'm', false);
             Assert::AreEqual(len, 2);
         }
+
+        TEST_METHOD(TestMethod22)
+        {
+            char* result[11] = { 0 }; 
+            try {
+                int len = gen_chain_word(NULL, 11, result, 0, 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'words' or 'result' is null.");
+            }
+        }
+        TEST_METHOD(TestMethod23)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" }; 
+            try {
+                int len = gen_chain_word(input, 11, NULL, 0, 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'words' or 'result' is null.");
+            }
+        }
+        TEST_METHOD(TestMethod24)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            try {
+                int len = gen_chain_word(input, 11, result, ' ', 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'head' or 'tail' is not a letter or 0.");
+            }
+        }
+
+        TEST_METHOD(TestMethod25)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            try {
+                int len = gen_chain_word(input, -1, result, 0, 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'len' is less than 0.");
+            }
+        }
+        TEST_METHOD(TestMethod26)
+        {
+            char* result[11] = { 0 };
+            try {
+                int len = gen_chain_char(NULL, 11, result, 0, 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'words' or 'result' is null.");
+            }
+        }
+        TEST_METHOD(TestMethod27)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            try {
+                int len = gen_chain_char(input, 11, NULL, 0, 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'words' or 'result' is null.");
+            }
+        }
+        TEST_METHOD(TestMethod28)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            try {
+                int len = gen_chain_char(input, 11, result, 'a', '0', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'head' or 'tail' is not a letter or 0.");
+            }
+        }
+
+        TEST_METHOD(TestMethod29)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            try {
+                int len = gen_chain_char(input, -1, result, 0, 'm', false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Invalid parameter: 'len' is less than 0.");
+            }
+        }
     };
 }
