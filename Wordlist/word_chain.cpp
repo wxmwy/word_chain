@@ -23,9 +23,9 @@ bool enable_loop = false, maxword = false, maxchar = false;
 
 clock_t start, finish;
 
-class File_handle {
+class FileHandle {
 private:
-    static void getwords(char *buff, int size) {
+    static void get_words(char *buff, int size) {
         int i, length, ifword;
         for (i = 0; i < size; i++) {
             length = 0;
@@ -38,9 +38,15 @@ private:
             }
             if (ifword) {
                 pwords[wordnum] = words[wordnum];
+                for (int j = wordnum - 1; j >= 0; j--) {
+                    if (strcmp(words[wordnum], words[j]) == 0) {
+                        wordnum--;
+                        break;
+                    }
+                }
                 wordnum++;
-
             }
+
         }
     }
 
@@ -62,16 +68,16 @@ public:
             char buff[BUF_SIZE + 2];
             for (i = 0; i < size; i++) buff[i] = s[i];
             buff[i] = '\0';
-            getwords(buff, size);
+            get_words(buff, size);
         }
         inf.close();
     }
 };
 
-class par_handle {
+class ParaHandle {
 public:
     static int deal_par(int argc, char *argv[]) {
-        int cnt, size, i;
+        int cnt;
         cnt = 1;
         if (argc == 1) {
             cout << "Missing parameter." << endl;
@@ -156,7 +162,7 @@ public:
 };
 
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
     start = clock();
     HINSTANCE CoreDLL = LoadLibrary("Core.dll");
@@ -173,29 +179,48 @@ int main(int argc, char *argv[])
     }
 
     int cnt;
-    cnt = par_handle::deal_par(argc, argv);
-    File_handle::deal_file(cnt, argv);
+    cnt = ParaHandle::deal_par(argc, argv);
+    FileHandle::deal_file(cnt, argv);
     puts("weewew");
     int len = 0;
     if (maxword) {
-        len = gen_chain_word(pwords, wordnum, result, head, tail, enable_loop);
+        try {
+            len = gen_chain_word(pwords, wordnum, result, head, tail, enable_loop);
+            ofstream outf;
+            outf.open("solution.txt");
+            cout << len << endl;
+            for (int i = 0; i < len; i++) {
+                cout << result[i] << endl;
+                outf << result[i] << '\n';
+            }
+            outf.close();
+        }
+        catch (const char *erroe_message) {
+            cout << erroe_message << endl;
+        }
     }
     else if (maxchar) {
-        len = gen_chain_char(pwords, wordnum, result, head, tail, enable_loop);
+        try {
+            len = gen_chain_char(pwords, wordnum, result, head, tail, enable_loop);
+            ofstream outf;
+            outf.open("solution.txt");
+            cout << len << endl;
+            for (int i = 0; i < len; i++) {
+                cout << result[i] << endl;
+                outf << result[i] << '\n';
+            }
+            outf.close();
+        }
+        catch (const char *erroe_message) {
+            cout << erroe_message << endl;
+        }
     }
     else {
         cout << "missing parameter -w or -c." << endl;
         exit(1);
     }
+
     
-    ofstream outf;
-    outf.open("solution.txt");
-    cout << len << endl;
-    for (int i = 0; i < len; i++) {
-        cout << result[i] << endl;
-        outf << result[i] << '\n';
-    }
-    outf.close();
     FreeLibrary(CoreDLL);
     finish = clock();
     printf("%f seconds cost.\n", (double)(finish - start) / CLOCKS_PER_SEC);

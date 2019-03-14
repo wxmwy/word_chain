@@ -42,8 +42,14 @@ namespace CoreModuleTest
                                     "Trick" };
             char* result[7] = { 0 };
             /* 调用Core中封装好的函数 */
-            int len = gen_chain_word(input, 7, result, 0, 0, false);
-            Assert::AreEqual(len, 1);
+            
+
+            try {
+                int len = gen_chain_word(input, 7, result, 0, 0, false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: no word chain meets the requirements");
+            }
         }
         TEST_METHOD(TestMethod5)
         {
@@ -51,8 +57,14 @@ namespace CoreModuleTest
                                     "Trick" };
             char* result[7] = { 0 };
             /* 调用Core中封装好的函数 */
-            int len = gen_chain_char(input, 7, result, 0, 0, false);
-            Assert::AreEqual(len, 1);
+            
+            try {
+                int len = gen_chain_char(input, 7, result, 0, 0, false);
+                Assert::AreEqual(len, 1);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: no word chain meets the requirements");
+            }
         }
         TEST_METHOD(TestMethod6)
         {
@@ -75,16 +87,26 @@ namespace CoreModuleTest
             char* input[5] = { "Algebra", "Applea", "Zooa", "Elephant", "Under" };
             char* result[5] = { 0 };
             /* 调用Core中封装好的函数 */
-            int len = gen_chain_char(input, 5, result, 0, 0, false);
-            Assert::AreEqual(len, -1);
+            
+            try {
+                int len = gen_chain_char(input, 5, result, 0, 0, false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: word text implies word rings");
+            }
+
         }
         TEST_METHOD(TestMethod9)
         {
             char* input[5] = { "Algebra", "Applea", "Zooa", "Elephant", "Under" };
             char* result[5] = { 0 };
             /* 调用Core中封装好的函数 */
-            int len = gen_chain_char(input, 5, result, 0, 0, false);
-            Assert::AreEqual(len, -1);
+            try {
+                int len = gen_chain_char(input, 5, result, 0, 0, false);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: word text implies word rings");
+            }
         }
         TEST_METHOD(TestMethod10)
         {
@@ -101,6 +123,119 @@ namespace CoreModuleTest
             /* 调用Core中封装好的函数 */
             int len = gen_chain_char(input, 5, result, 0, 0, true);
             Assert::AreEqual(len, 5);
+        }
+
+        TEST_METHOD(TestMethod12)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zoo", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            int len = gen_chain_word(input, 11, result, 'a', 0, false);
+            Assert::AreEqual(len, 4);
+        }
+        TEST_METHOD(TestMethod13)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zoo", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            int len = gen_chain_char(input, 11, result, 'a', 0, false);
+            Assert::AreEqual(len, 4);
+        }
+        TEST_METHOD(TestMethod14)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zoo", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            try {
+                int len = gen_chain_word(input, 11, result, 0, 'm', false);
+                Assert::AreEqual(len, 1);
+            }
+            catch(const char *error_message){
+                Assert::AreEqual(error_message, "Error: no word chain meets the requirements");
+            }
+        }
+        TEST_METHOD(TestMethod15)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zoo", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            
+            try {
+                int len = gen_chain_char(input, 11, result, 0, 'm', false);
+                Assert::AreEqual(len, 1);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: no word chain meets the requirements");
+            }
+
+        }
+        TEST_METHOD(TestMethod16)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zoo", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            try {
+                int len = gen_chain_word(input, 11, result, 'a', 'm', false);
+                Assert::AreEqual(len, 0);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: no word chain meets the requirements");
+            }
+
+        }
+        TEST_METHOD(TestMethod17)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zoo", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            try {
+                int len = gen_chain_char(input, 11, result, 'a', 'm', false);
+                Assert::AreEqual(len, 0);
+            }
+            catch (const char *error_message) {
+                Assert::AreEqual(error_message, "Error: no word chain meets the requirements");
+            }
+
+        }
+        TEST_METHOD(TestMethod18)
+        {
+            char* input[5] = { "Algebra", "Applea", "Zooa", "Elephant", "Under" };
+            char* result[5] = { 0 };
+            /* 调用Core中封装好的函数 */
+            int len = gen_chain_word(input, 5, result, 'a', 0, true);
+            Assert::AreEqual(len, 2);
+        }
+        TEST_METHOD(TestMethod19)
+        {
+            char* input[5] = { "Algebra", "Applea", "Zooa", "Elephant", "Under" };
+            char* result[5] = { 0 };
+            /* 调用Core中封装好的函数 */
+            int len = gen_chain_char(input, 5, result, 'a', 0, true);
+            Assert::AreEqual(len, 2);
+        }
+        TEST_METHOD(TestMethod20)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            int len = gen_chain_char(input, 11, result, 0, 'm', false);
+            Assert::AreEqual(len, 2);
+        }
+        TEST_METHOD(TestMethod21)
+        {
+            char* input[11] = { "Algebra", "Apple", "Zop", "Elephant", "Under", "Fox", "Dog", "Moon", "Leaf",
+                                    "Trick", "Pseudopseudohypoparathyroidism" };
+            char* result[11] = { 0 };
+            /* 调用Core中封装好的函数 */
+            int len = gen_chain_word(input, 11, result, 0, 'm', false);
+            Assert::AreEqual(len, 2);
         }
     };
 }

@@ -324,22 +324,30 @@ int main(void)
                 t = par_t ? tail[0] : 0;
                 int cnt = 0;
                 if (par_w) {
-                    cnt = gen_chain_word(pwords, wordnum, result, h, t, par_r);
-                    // cout << "par_w" << endl;
-                    // cout << cnt << endl;
+                    try {
+                        cnt = gen_chain_word(pwords, wordnum, result, h, t, par_r);
+                        for (int i = 0; i < cnt; i++) {
+                            answer += result[i];
+                            answer += "\n";
+                        }
+                    }
+                    catch (const char *error_message) {
+                        answer = string(error_message);
+                    }
 
                 }
                 else if (par_c) {
-                    cnt = gen_chain_char(pwords, wordnum, result, head[0], tail[0], par_r);
-                    // cout << "par_c" << endl;
-                    // cout << cnt << endl;
+                    try {
+                        cnt = gen_chain_char(pwords, wordnum, result, h, t, par_r);
+                        for (int i = 0; i < cnt; i++) {
+                            answer += result[i];
+                            answer += "\n";
+                        }
+                    }
+                    catch (const char *error_message) {
+                        answer = string(error_message);
+                    }
                 }
-
-                for (int i = 0; i < cnt; i++) {
-                    answer += result[i];
-                    answer += "\n";
-                }
-                // cout << answer << endl;
                 show_result = true;
             }
             if (par_right && show_result) {
