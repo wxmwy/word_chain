@@ -84,9 +84,6 @@ public:
             exit(1);
         }
         while (cnt < argc - 1) {
-            if (DEBUG) {
-                cout << argv[cnt] << argv[cnt][0] << argv[cnt][1] << argv[cnt][2] << endl;
-            }
             if (argv[cnt][0] == '-' && argv[cnt][1] == 'w' && argv[cnt][2] == '\0') { //-w
                 if (maxword) {
                     cout << "Repeated parameter -w." << endl;
@@ -181,7 +178,6 @@ int main(int argc, char *argv[])
     int cnt;
     cnt = ParaHandle::deal_par(argc, argv);
     FileHandle::deal_file(cnt, argv);
-    puts("weewew");
     int len = 0;
     if (maxword) {
         try {
