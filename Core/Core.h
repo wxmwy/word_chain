@@ -22,9 +22,9 @@ class WordGraph {
 private:
 
 public:
-    int graph[30][30], words_index[30][30];
+    int graph[30][30], index[30][30];
     int in_degree[30];
-    queue<int> vertex_sorted;
+    deque<int> vertex_sorted;
     vector<WordInfo> start_words[26], end_words[26];
 
     WordGraph();

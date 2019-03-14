@@ -5,10 +5,8 @@
 #include <cstdio>
 #include <Windows.h>
 
-#define DEBUG 1
-#define MAX_WORD_NUM 20000
-#define MAX_WORD_LONG 30
-#define BUF_SIZE 1000
+#define MAX_WORD_NUM 100000
+#define MAX_WORD_LONG 300
 using namespace std;
 
 typedef int(*p_gen_chain_word)(char* words[], int len, char* result[], char head, char tail, bool enable_loop);
@@ -25,26 +23,29 @@ clock_t start, finish;
 
 class FileHandle {
 private:
-    static void get_words(char *buff, int size) {
+    static void get_words(string buff) {
+        int size = (int)buff.size();
         int i, length, ifword;
         for (i = 0; i < size; i++) {
             length = 0;
             ifword = 0;
-            while ((buff[i] >= 'a' && buff[i] <= 'z') || (buff[i] >= 'A' && buff[i] <= 'Z') && i < size) {
-                if (buff[i] >= 'A' && buff[i] <= 'Z') buff[i] = buff[i] - 'A' + 'a';
-                words[wordnum][length++] = buff[i];
+            while (i < size && isalpha(buff[i])) {
+                words[wordnum][length++] = (char)tolower(buff[i]);
+                if (length > MAX_WORD_LONG - 2) {
+                    cout << "Error: the length of some words is too long." << endl;
+                    exit(1);
+                }
                 ifword = 1;
                 i++;
             }
             if (ifword) {
+                words[wordnum][length] = '\0';
                 pwords[wordnum] = words[wordnum];
-                for (int j = wordnum - 1; j >= 0; j--) {
-                    if (strcmp(words[wordnum], words[j]) == 0) {
-                        wordnum--;
-                        break;
-                    }
-                }
                 wordnum++;
+                if (wordnum > MAX_WORD_NUM - 2) {
+                    cout << "Error: the word list is too long." << endl;
+                    exit(1);
+                }
             }
 
         }
@@ -52,23 +53,15 @@ private:
 
 public:
     static void deal_file(int cnt, char *argv[]) {
-        int size;
         string s;
-        int i;
         ifstream inf;
         inf.open(argv[cnt]);
         if (!inf) {
-            cout << "File does not exist." << endl;
+            cout << "Error: file does not exist." << endl;
             exit(1);
         }
-
-        cnt = 0;
         while (getline(inf, s)) {
-            size = (int)s.length();
-            char buff[BUF_SIZE + 2];
-            for (i = 0; i < size; i++) buff[i] = s[i];
-            buff[i] = '\0';
-            get_words(buff, size);
+            get_words(s);
         }
         inf.close();
     }
@@ -80,35 +73,35 @@ public:
         int cnt;
         cnt = 1;
         if (argc == 1) {
-            cout << "Missing parameter." << endl;
+            cout << "Error: Missing parameter." << endl;
             exit(1);
         }
         while (cnt < argc - 1) {
             if (argv[cnt][0] == '-' && argv[cnt][1] == 'w' && argv[cnt][2] == '\0') { //-w
                 if (maxword) {
-                    cout << "Repeated parameter -w." << endl;
+                    cout << "Error: Repeated parameter -w." << endl;
                     exit(1);
                 }
                 else if (maxchar) {
-                    cout << "Conflicting parameters -w -c." << endl;
+                    cout << "Error: Conflicting parameters -w -c." << endl;
                     exit(1);
                 }
                 maxword = true;
             }
             else if (argv[cnt][0] == '-' && argv[cnt][1] == 'c' && argv[cnt][2] == '\0') { //-c
                 if (maxchar) {
-                    cout << "Repeated parameter -c." << endl;
+                    cout << "Error: Repeated parameter -c." << endl;
                     exit(1);
                 }
                 else if (maxword) {
-                    cout << "Conflicting parameters -w -c." << endl;
+                    cout << "Error: Conflicting parameters -w -c." << endl;
                     exit(1);
                 }
                 maxchar = true;
             }
             else if (argv[cnt][0] == '-' && argv[cnt][1] == 'r' && argv[cnt][2] == '\0') { //-r
                 if (enable_loop) {
-                    cout << "Repeated parameter -r." << endl;
+                    cout << "Error: Repeated parameter -r." << endl;
                     exit(1);
                 }
                 enable_loop = true;
@@ -116,40 +109,40 @@ public:
 
             else if (argv[cnt][0] == '-' && argv[cnt][1] == 'h' && argv[cnt][2] == '\0') { //-h
                 if (head != '\0') {
-                    cout << "Repeated parameter -h." << endl;
+                    cout << "Error: Repeated parameter -h." << endl;
                     exit(1);
                 }
                 cnt++;
-                if (cnt == argc) {
-                    cout << "Missing parameter." << endl;
+                if (cnt == argc - 1) {
+                    cout << "Error: Missing parameter." << endl;
                     exit(1);
                 }
                 head = argv[cnt][0];
                 if (argv[cnt][1] != '\0' || !((head >= 'a' && head <= 'z') || (head >= 'A' && head <= 'Z'))) {
-                    cout << "Illegal parameter " << argv[cnt] << endl;
+                    cout << "Error: Illegal parameter " << argv[cnt] << endl;
                     exit(1);
                 }
                 if (head >= 'A' && head <= 'Z') head = head - 'A' + 'a';
             }
             else if (argv[cnt][0] == '-' && argv[cnt][1] == 't' && argv[cnt][2] == '\0') { //-t
                 if (tail != '\0') {
-                    cout << "Repeated parameter -t." << endl;
+                    cout << "Error: Repeated parameter -t." << endl;
                     exit(1);
                 }
                 cnt++;
-                if (cnt == argc) {
-                    cout << "Missing parameter." << endl;
+                if (cnt == argc - 1) {
+                    cout << "Error: Missing parameter." << endl;
                     exit(1);
                 }
                 tail = argv[cnt][0];
                 if (argv[cnt][1] != '\0' || !((tail >= 'a' && tail <= 'z') || (tail >= 'A' && tail <= 'Z'))) {
-                    cout << "Illegal parameter " << argv[cnt] << endl;
+                    cout << "Error: Illegal parameter " << argv[cnt] << endl;
                     exit(1);
                 }
                 if (tail >= 'A' && tail <= 'Z') tail = tail - 'A' + 'a';
             }
             else {
-                cout << "Illegal parameter." << endl;
+                cout << "Error: Illegal parameter " << argv[cnt] << endl;
                 exit(1);
             }
             cnt++;
@@ -161,17 +154,17 @@ public:
 
 int main(int argc, char *argv[])
 {
-    start = clock();
+    //start = clock();
     HINSTANCE CoreDLL = LoadLibrary("Core.dll");
     if (CoreDLL == NULL) {
-        cout << "File 'Core.dll' not found." << endl;
+        cout << "Error: File 'Core.dll' not found." << endl;
         exit(1);
     }
 
     p_gen_chain_word gen_chain_word = (p_gen_chain_word)GetProcAddress(CoreDLL, "gen_chain_word");
     p_gen_chain_char gen_chain_char = (p_gen_chain_char)GetProcAddress(CoreDLL, "gen_chain_char");
     if (gen_chain_word == NULL || gen_chain_char == NULL) {
-        cout << "Invalid file 'Core.dll'." << endl;
+        cout << "Error: Invalid file 'Core.dll'." << endl;
         exit(1);
     }
 
@@ -184,9 +177,9 @@ int main(int argc, char *argv[])
             len = gen_chain_word(pwords, wordnum, result, head, tail, enable_loop);
             ofstream outf;
             outf.open("solution.txt");
-            cout << len << endl;
+            //cout << len << endl;
             for (int i = 0; i < len; i++) {
-                cout << result[i] << endl;
+                //cout << result[i] << endl;
                 outf << result[i] << '\n';
             }
             outf.close();
@@ -200,9 +193,9 @@ int main(int argc, char *argv[])
             len = gen_chain_char(pwords, wordnum, result, head, tail, enable_loop);
             ofstream outf;
             outf.open("solution.txt");
-            cout << len << endl;
+            //cout << len << endl;
             for (int i = 0; i < len; i++) {
-                cout << result[i] << endl;
+                //cout << result[i] << endl;
                 outf << result[i] << '\n';
             }
             outf.close();
@@ -212,13 +205,13 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        cout << "missing parameter -w or -c." << endl;
+        cout << "Error: Missing parameter -w or -c." << endl;
         exit(1);
     }
 
-    
+
     FreeLibrary(CoreDLL);
-    finish = clock();
-    printf("%f seconds cost.\n", (double)(finish - start) / CLOCKS_PER_SEC);
+    //finish = clock();
+    //printf("%f seconds cost.\n", (double)(finish - start) / CLOCKS_PER_SEC);
     return 0;
 }

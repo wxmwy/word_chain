@@ -3,15 +3,15 @@
 [Rr]elease/
 BIN/*
 GUIBIN/*
+*.txt
 
 !BIN/Core.dll
 !BIN/Wordlist.exe
-!BIN/*.txt
+!BIN/solution.txt
 !GUIBIN/Core.dll
 !GUIBIN/GUI.exe
 !GUIBIN/imgui.ini
 !GUIBIN/Readme.md
 /Core/ClassDiagram.cd
 /Core/ClassDiagram1.cd
-/TestResults/f1bb5431-8899-46ce-8018-1a0b1a0df26d/David Liu_DESKTOP-CTOBL5C 2019-03-14 15_31_46.coverage
 /Wordlist/ClassDiagram.cd

@@ -81,6 +81,15 @@ int get_save_file_name(char *file_name)
     return GetSaveFileName(&ofn);
 }
 
+#define BUFSIZE 10000000
+#define MAX_WORD_NUM 100000
+#define MAX_WORD_LONG 300
+char buf[BUFSIZE];
+char head[10];
+char tail[10];
+char words[MAX_WORD_NUM][MAX_WORD_LONG];
+char *pwords[MAX_WORD_NUM];
+char *result[MAX_WORD_NUM];
 
 int main(void)
 {
@@ -177,12 +186,7 @@ int main(void)
     bool par_w = false, par_c = false, par_h = false, par_t = false, par_r = false;
     bool show_result = false;
     bool show_another_window = false;
-    char buf[10000];
-    char head[1000];
-    char tail[1000];
-    char words[10000][30];
-    char *pwords[10000];
-    char *result[10000];
+    bool input_error = false;
     //const char *p_answer;
     string answer;
     char open_file_name[1000];
@@ -232,6 +236,7 @@ int main(void)
             ImGui::Text("Please input words or select file:");
             if (ImGui::Button("Select File")) {
                 show_result = false;
+                input_error = false;
                 if (get_open_file_name(open_file_name)) {
                     inf.open(open_file_name);
                     if (inf) {
@@ -240,17 +245,24 @@ int main(void)
                         memset(buf, '\0', sizeof(buf));
                         while (getline(inf, s)) {
                             int size = (int)s.length();
-                            for (int i = 0; i < size; i++) buf[cnt++] = s[i];
+                            for (int i = 0; i < size; i++) {
+                                buf[cnt++] = s[i];
+                                if (cnt > BUFSIZE - 10) {
+                                    strcpy(open_file_name, "Error: the file is too large");
+                                    goto label2;
+                                }
+                            }
                             buf[cnt++] = '\n';
                             buf[cnt] = '\0';
                         }
                     }
+                label2:
                     inf.close();
                 }
             }
             ImGui::SameLine();
             ImGui::Text("%s", open_file_name);
-            if (ImGui::InputTextMultiline(label, buf, 10000, ImVec2(200, 200), 0, NULL, NULL)) {
+            if (ImGui::InputTextMultiline(label, buf, BUFSIZE - 1, ImVec2(200, 200), 0, NULL, NULL)) {
                 show_result = false;
             }
 
@@ -305,21 +317,30 @@ int main(void)
                 int wordnum = 0;
                 char h, t;
                 answer.clear();
-                for (int i = 0; i < 10000; i++) {
+                int size = (int)strlen(buf);
+                for (int i = 0; i < size; i++) {
                     length = 0;
                     ifword = 0;
-                    while ((buf[i] >= 'a' && buf[i] <= 'z') || (buf[i] >= 'A' && buf[i] <= 'Z') && i < 10000) {
-                        if (buf[i] >= 'A' && buf[i] <= 'Z') buf[i] = buf[i] - 'A' + 'a';
-                        words[wordnum][length++] = buf[i];
+                    while (i < size && isalpha(buf[i])) {
+                        words[wordnum][length++] = (char)tolower(buf[i]);
+                        if (length > MAX_WORD_LONG - 2) {
+                            answer = string("Error: the word is too long.");
+                            goto label1;
+                        }
                         ifword = 1;
                         i++;
                     }
                     if (ifword) {
+                        words[wordnum][length] = '\0';
                         pwords[wordnum] = words[wordnum];
                         wordnum++;
+                        if (wordnum > MAX_WORD_NUM - 2) {
+                            answer = string("Error: the word list is too long.");
+                            goto label2;
+                        }
                     }
                 }
-                
+
                 h = par_h ? head[0] : 0;
                 t = par_t ? tail[0] : 0;
                 int cnt = 0;
@@ -348,6 +369,7 @@ int main(void)
                         answer = string(error_message);
                     }
                 }
+            label1:
                 show_result = true;
             }
             if (par_right && show_result) {
